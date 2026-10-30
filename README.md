@@ -95,9 +95,9 @@ Instead of selling ADA to a skeptical adult, we let a child create something rea
 
 | Document | Purpose |
 |---|---|
-| [`docs/compliance.md`](docs/compliance.md) | FSCA / ARB launch checklist — **read before any marketing goes live** |
-| [`docs/messaging.md`](docs/messaging.md) | Approved copy library — the only approved language |
-| [`docs/metrics.md`](docs/metrics.md) | Funnel definitions and tracking spreadsheet template |
+| [`compliance.md`](compliance.md) | FSCA / ARB launch checklist — **read before any marketing goes live** |
+| [`messaging.md`](messaging.md) | Approved copy library — the only approved language |
+| [`metrics.md`](metrics.md) | Funnel definitions and tracking spreadsheet template |
 
 ---
 
@@ -110,7 +110,7 @@ Instead of selling ADA to a skeptical adult, we let a child create something rea
 
 > Safer language is not just legally required — it attracts better, longer-term users and protects the brand.
 
-**Full checklist:** [`docs/compliance.md`](docs/compliance.md)
+**Full checklist:** [`compliance.md`](docs/compliance.md)
 
 ---
 
@@ -129,7 +129,7 @@ We track the funnel — **not vanity metrics**.
 
 *Scan count and follower count are diagnostic only — never the goal.*
 
-**Full definitions:** [`docs/metrics.md`](docs/metrics.md)
+**Full definitions:** [`metrics.md`](docs/metrics.md)
 
 ---
 
@@ -152,7 +152,8 @@ To execute the 4-week pilot we need:
 - **Pilot sites** — 2–3 family-friendly venues
 - **Ecosystem support** — introductions to Cardano tooling partners and grant programs
 
-**Contact:** [name] · [email] · [demo QR link]
+**Contact:** [Opang] · [usingaopang@gmail.com] · [
+]
 
 ---
 
