@@ -110,7 +110,7 @@ Instead of selling ADA to a skeptical adult, we let a child create something rea
 
 > Safer language is not just legally required — it attracts better, longer-term users and protects the brand.
 
-**Full checklist:** [`compliance.md`](docs/compliance.md)
+**Full checklist:** [`compliance.md`](compliance.md)
 
 ---
 
@@ -129,7 +129,7 @@ We track the funnel — **not vanity metrics**.
 
 *Scan count and follower count are diagnostic only — never the goal.*
 
-**Full definitions:** [`metrics.md`](docs/metrics.md)
+**Full definitions:** [`metrics.md`](metrics.md)
 
 ---
 
