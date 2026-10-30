@@ -96,7 +96,6 @@ Instead of selling ADA to a skeptical adult, we let a child create something rea
 | Document | Purpose |
 |---|---|
 | [`compliance.md`](compliance.md) | FSCA / ARB launch checklist — **read before any marketing goes live** |
-| [`messaging.md`](messaging.md) | Approved copy library — the only approved language |
 | [`metrics.md`](metrics.md) | Funnel definitions and tracking spreadsheet template |
 
 ---
