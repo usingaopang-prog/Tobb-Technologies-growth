@@ -11,6 +11,68 @@
 > **Scan. Play. Create.**
 > *Cardano, changing the world — one family at a time.*
 
+## 📌 Overview
+
+The **Cardano Family QR Experience** is a growth initiative that moves Cardano adoption **out of the screen and into the physical world**.
+
+We place QR codes on T-shirts, posters, table cards, and event booths. When someone scans, they land on a simple two-door page:
+
+- **Children (6–14)** play a short web-based mini-game and mint their **first free NFT on Cardano** — a real digital asset they own, with no download and no wallet required to start.
+- **Parents** get a 90-second plain-language explainer of what just happened, and an **optional** next step: create a beginner-friendly wallet and receive a small amount of ADA to *use* — not to hold.
+
+One scan serves two audiences at once. The child creates the emotional hook; the parent becomes the qualified, engaged user.
+
+The entire experience is **compliant by design** — built around South Africa's FSCA and ARB advertising rules, with no return promises and no investment advice.
+
+---
+
+## 🎯 Purpose
+
+This repository exists to **document, govern, and scale** the Cardano Family QR Experience — and to make the business case for it publicly.
+
+### Why we are building this
+
+1. **Cardano is perceived as hard to enter.** The ecosystem has over-invested in infrastructure and under-invested in user experience and public narrative. Families are curious but bounce off jargon and price charts.
+2. **Most crypto marketing talks *at* people.** It targets speculators, not households. There is no safe, fun, family-friendly on-ramp.
+3. **Digital-only growth is easy to ignore.** A physical QR code on a T-shirt creates curiosity in the real world — a hook no ad impression can replicate.
+4. **Children pull parents in — not the other way around.** A child creating something real and free is a far stronger conversion moment than pitching ADA to a skeptical adult.
+
+### What this repository is for
+
+| Purpose | Where it lives |
+|---|---|
+| **Define the growth strategy** | [`README.md`](README.md) — this document |
+| **Ensure regulatory compliance** | [`compliance.md`](compliance.md) — FSCA / ARB launch checklist |
+| **Measure what matters** | [`metrics.md`](metrics.md) — funnel definitions + tracking template |
+| **Run the 4-week pilot** | [`pilot/plan.md`](pilot/plan.md) and [`pilot/results.md`](pilot/results.md) |
+| **Ship the product** | [`landing/`](landing/) and [`game/`](game/) |
+
+### What success looks like
+
+A measurable funnel — **Scan → Landing view → Game start → Completion → NFT mint → Parent entry → Wallet creation → 7-day return** — that converts physical curiosity into engaged Cardano users and recurring revenue, **without ever promising investment returns**.
+
+The pilot succeeds if, within 4 weeks:
+
+- ≥ 30% of game starters complete the game
+- ≥ 15% of completers mint an NFT
+- ≥ 20% of child users pull a parent into the explainer
+- ≥ 10% of parent entrants create a wallet
+
+### Who this is for
+
+- **Our team** — a single source of truth for strategy, copy, and compliance
+- **Partners and pilot venues** — a clear, honest picture of what we are building and why
+- **Ecosystem collaborators and grant reviewers** — an open, auditable plan with defined metrics
+- **Anyone building family-friendly Web3 onboarding** — a reusable, compliance-first template
+
+### What this repository is *not*
+
+- It is **not** investment advice.
+- It is **not** a promise of returns on ADA.
+- It is **not** a speculative NFT project — the NFTs are proof of participation, not assets to flip.
+
+> **Scan. Play. Create.**
+> *Cardano, changing the world — one family at a time.*
 ---
 
 ## 📖 Table of Contents
