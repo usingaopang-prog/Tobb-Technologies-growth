@@ -151,7 +151,8 @@ To execute the 4-week pilot we need:
 - **Pilot sites** — 2–3 family-friendly venues
 - **Ecosystem support** — introductions to Cardano tooling partners and grant programs
 
-**Contact:** [Opang] · [usingaopang@gmail.com] 
+**Contact:** [Opang] · [https://wa.me/27825752351?text=Hi%20Opang%2C%20I%20saw%20your%20Cardano%20Family%20QR%20Experience%20presentation%20and%20would%20like%20to%20know%20more.
+]
 
 ---
 
