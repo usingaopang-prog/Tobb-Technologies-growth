@@ -44,7 +44,7 @@ This repository exists to **document, govern, and scale** the Cardano Family QR 
 | **Define the growth strategy** | [`README.md`](README.md) — this document |
 | **Ensure regulatory compliance** | [`compliance.md`](compliance.md) — FSCA / ARB launch checklist |
 | **Measure what matters** | [`metrics.md`](metrics.md) — funnel definitions + tracking template |
-| **Run the 4-week pilot** | [`pilot/plan.md`](pilot/plan.md) and [`pilot/results.md`](pilot/results.md) |
+| **Run the 4-week pilot** | [`pilot.md`](pilot.md) and [`pilot/results.md`](pilot/results.md) |
 | **Ship the product** | [`landing/`](landing/) and [`game/`](game/) |
 
 ### What success looks like
