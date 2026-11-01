@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>🎨 Kids Paint</title>
+  <title>🎨 Kids Paint Studio</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
-      background: linear-gradient(135deg, #ffeaa7, #a8e6cf);
+      background: linear-gradient(135deg, #ffeaa7, #a8e6cf, #a0d8ef);
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -16,317 +16,1712 @@
       user-select: none;
     }
 
-    header {
-      text-align: center;
-      padding: 8px;
-      font-size: 28px;
-      color: #fff;
-      text-shadow: 2px 2px 0 #ff6b9d;
-    }
-
-    #toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px;
-      background: rgba(255,255,255,0.6);
-      border-radius: 20px;
-      margin: 0 8px;
-    }
-
-    .color-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 3px solid #fff;
-      cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-      transition: transform 0.1s;
-    }
-    .color-btn:hover { transform: scale(1.15); }
-    .color-btn.active {
-      border-color: #333;
-      transform: scale(1.2);
-    }
-
-    .size-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: #fff;
-      border: 2px solid #ccc;
-      cursor: pointer;
+    /* ===== TOP BAR ===== */
+    #topbar {
       display: flex;
       align-items: center;
-      justify-content: center;
-    }
-    .size-btn.active { border-color: #333; background: #ffeaa7; }
-    .size-dot {
-      background: #333;
-      border-radius: 50%;
-    }
-
-    .action-btn {
-      height: 44px;
-      padding: 0 16px;
-      border-radius: 22px;
-      border: none;
-      background: #ff6b9d;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-    }
-    .action-btn:hover { background: #ff4f88; }
-    .action-btn.eraser-on { background: #6c5ce7; }
-
-    #canvas-wrap {
-      flex: 1;
-      margin: 8px;
-      border-radius: 20px;
-      overflow: hidden;
-      background: white;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-      position: relative;
-    }
-
-    canvas {
-      display: block;
-      touch-action: none;
-      cursor: crosshair;
-    }
-
-    #stickers {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      padding: 4px;
+      gap: 8px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.55);
+      border-bottom: 3px solid #ff6b9d;
       flex-wrap: wrap;
     }
-    .sticker {
-      font-size: 32px;
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.5);
-      transition: transform 0.1s;
+    #topbar h1 {
+      font-size: 22px;
+      color: #ff6b9d;
+      text-shadow: 1px 1px 0 #fff;
+      margin-right: auto;
     }
-    .sticker:hover { transform: scale(1.2); background: #fff; }
+    .mode-tab {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #fff;
+      color: #555;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      transition: all 0.15s;
+    }
+    .mode-tab:hover { transform: translateY(-1px); }
+    .mode-tab.active { background: #ff6b9d; color: #fff; }
 
-    @media (max-width: 600px) {
-      header { font-size: 20px; }
-      .color-btn, .size-btn { width: 36px; height: 36px; }
-      .action-btn { height: 38px; padding: 0 12px; font-size: 14px; }
+    /* ===== MAIN LAYOUT ===== */
+    #main { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+
+    /* ===== SIDEBAR ===== */
+    #sidebar {
+      width: 250px;
+      background: rgba(255,255,255,0.75);
+      padding: 10px;
+      overflow-y: auto;
+      border-right: 3px solid #a8e6cf;
+      transition: width 0.2s;
+    }
+    .panel { margin-bottom: 14px; }
+    .panel h3 {
+      font-size: 14px; color: #6c5ce7; margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    #colors { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+    .color-btn {
+      width: 100%; aspect-ratio: 1; border-radius: 50%;
+      border: 3px solid #fff; cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: transform 0.1s;
+    }
+    .color-btn:hover { transform: scale(1.12); }
+    .color-btn.active { border-color: #333; transform: scale(1.15); box-shadow: 0 0 0 3px #ffd93d; }
+
+    #sizes { display: flex; gap: 6px; justify-content: space-between; }
+    .size-btn {
+      flex: 1; aspect-ratio: 1; border-radius: 12px; background: #fff;
+      border: 2px solid #ddd; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .size-btn.active { border-color: #333; background: #ffeaa7; }
+    .size-dot { background: #333; border-radius: 50%; }
+
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .tool-btn {
+      padding: 10px 6px; border-radius: 12px; border: none;
+      font-size: 13px; font-weight: bold; cursor: pointer;
+      background: #fff; color: #555;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15); transition: all 0.15s;
+    }
+    .tool-btn:hover { transform: translateY(-1px); }
+    .tool-btn.active { background: #6c5ce7; color: #fff; }
+    .tool-btn.danger { background: #e74c3c; color: #fff; }
+    .tool-btn.save { background: #00b894; color: #fff; }
+
+    #stickers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .sticker {
+      font-size: 26px; cursor: pointer; padding: 4px;
+      border-radius: 10px; background: rgba(255,255,255,0.7);
+      text-align: center; transition: all 0.1s;
+    }
+    .sticker:hover { transform: scale(1.15); background: #ffeaa7; }
+    .sticker.active { background: #ffd93d; box-shadow: 0 0 0 3px #ff6b9d; }
+
+    /* ===== CANVAS AREA ===== */
+    #canvas-wrap {
+      flex: 1; margin: 10px; border-radius: 20px; overflow: hidden;
+      background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    canvas { display: block; touch-action: none; cursor: crosshair; position: absolute; }
+
+    #zoom-controls { position: absolute; bottom: 10px; right: 10px; display: flex; gap: 4px; z-index: 10; }
+    .zoom-btn {
+      width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff;
+      background: #6c5ce7; color: #fff; font-size: 20px; font-weight: bold;
+      cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .zoom-btn:hover { background: #5a4bcf; }
+
+    /* ===== GALLERY ===== */
+    #gallery-panel {
+      position: absolute; inset: 0; background: rgba(255,255,255,0.97);
+      z-index: 100; overflow-y: auto; padding: 20px; display: none;
+    }
+    #gallery-panel.show { display: block; }
+    #gallery-panel h2 { text-align: center; color: #ff6b9d; margin-bottom: 16px; font-size: 26px; }
+    #gallery-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px; max-width: 900px; margin: 0 auto;
+    }
+    .gallery-item {
+      background: #fff; border: 3px solid #eee; border-radius: 14px;
+      padding: 10px; cursor: pointer; text-align: center;
+      transition: all 0.15s; box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+    .gallery-item:hover {
+      border-color: #ff6b9d; transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+    .gallery-item canvas { width: 100%; height: auto; display: block; border-radius: 8px; background: #fafafa; }
+    .gallery-item p { font-size: 14px; color: #555; margin-top: 6px; font-weight: bold; }
+    #close-gallery {
+      position: sticky; top: 0; float: right; padding: 8px 18px;
+      border-radius: 20px; border: none; background: #e74c3c; color: #fff;
+      font-size: 16px; font-weight: bold; cursor: pointer; z-index: 101;
+    }
+
+    /* ===== PICTURE MAKER ===== */
+    #maker-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      z-index: 200; display: none; align-items: center; justify-content: center;
+    }
+    #maker-overlay.show { display: flex; }
+    #maker-box {
+      background: #fff; border-radius: 20px; padding: 16px;
+      width: 90%; max-width: 620px; max-height: 92vh;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    #maker-box h2 { color: #6c5ce7; text-align: center; font-size: 20px; }
+    #maker-box p { text-align: center; color: #777; font-size: 13px; }
+    #maker-canvas-wrap {
+      border: 3px dashed #a8e6cf; border-radius: 14px; background: #fff;
+      overflow: hidden; flex: 1; min-height: 280px; position: relative;
+    }
+    #maker-canvas { position: absolute; top: 0; left: 0; touch-action: none; cursor: crosshair; }
+    #maker-tools { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+    .maker-btn {
+      padding: 8px 14px; border-radius: 12px; border: none;
+      background: #eee; font-size: 14px; font-weight: bold;
+      cursor: pointer; color: #555;
+    }
+    .maker-btn:hover { background: #ddd; }
+    .maker-btn.primary { background: #6c5ce7; color: #fff; }
+    .maker-btn.primary:hover { background: #5a4bcf; }
+    .maker-btn.danger { background: #e74c3c; color: #fff; }
+
+    /* ===== CAMERA OVERLAY ===== */
+    #camera-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 300; display: none; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; padding: 16px;
+    }
+    #camera-overlay.show { display: flex; }
+    #camera-box {
+      background: #fff; border-radius: 20px; padding: 16px;
+      width: 100%; max-width: 680px; max-height: 92vh;
+      display: flex; flex-direction: column; gap: 12px; overflow-y: auto;
+    }
+    #camera-box h2 { color: #6c5ce7; text-align: center; font-size: 22px; }
+    #camera-box p { text-align: center; color: #777; font-size: 13px; }
+
+    #camera-preview-wrap {
+      position: relative; width: 100%; aspect-ratio: 4/3;
+      background: #000; border-radius: 14px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #camera-video {
+      width: 100%; height: 100%; object-fit: cover; display: none;
+    }
+    #camera-photo {
+      width: 100%; height: 100%; object-fit: contain; display: none; background: #000;
+    }
+    #camera-placeholder {
+      color: #aaa; font-size: 16px; text-align: center; padding: 20px;
+    }
+    #camera-placeholder .big { font-size: 60px; display: block; margin-bottom: 10px; }
+
+    #camera-controls {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    }
+    .cam-btn {
+      padding: 12px 22px; border-radius: 30px; border: none;
+      font-size: 16px; font-weight: bold; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cam-btn:hover { transform: translateY(-2px); }
+    .cam-btn.primary { background: #6c5ce7; color: #fff; }
+    .cam-btn.shutter { background: #e74c3c; color: #fff; font-size: 18px; padding: 14px 30px; }
+    .cam-btn.secondary { background: #eee; color: #555; }
+    .cam-btn.success { background: #00b894; color: #fff; }
+    .cam-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* Conversion controls */
+    #conversion-controls {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: #f9f6ff;
+      border-radius: 14px;
+      padding: 12px;
+    }
+    #conversion-controls.show { display: flex; }
+    #conversion-controls label {
+      font-size: 13px; font-weight: bold; color: #555;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #conversion-controls input[type=range] {
+      width: 100%; accent-color: #6c5ce7;
+    }
+    .slider-row { display: flex; flex-direction: column; gap: 4px; }
+    .slider-value {
+      font-size: 12px; color: #6c5ce7; font-weight: bold;
+    }
+    #converted-preview-wrap {
+      position: relative; width: 100%; aspect-ratio: 4/3;
+      background: #fff; border-radius: 14px; overflow: hidden;
+      border: 3px solid #a8e6cf;
+      display: none;
+    }
+    #converted-preview-wrap.show { display: block; }
+    #converted-preview {
+      width: 100%; height: 100%; object-fit: contain; background: #fff;
+    }
+
+    /* ===== TOAST ===== */
+    #toast {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #333; color: #fff; padding: 12px 24px;
+      border-radius: 30px; font-size: 16px; font-weight: bold;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s; z-index: 999;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 700px) {
+      #sidebar { width: 170px; padding: 6px; }
+      #topbar h1 { font-size: 16px; }
+      .mode-tab { padding: 6px 10px; font-size: 12px; }
+      #colors { grid-template-columns: repeat(4, 1fr); }
+      #stickers { grid-template-columns: repeat(4, 1fr); }
+      .sticker { font-size: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <header>🎨 Draw & Paint! 🖌️</header>
-
-  <div id="toolbar">
-    <!-- Colors -->
-    <div class="color-btn active" style="background:#000000" data-color="#000000"></div>
-    <div class="color-btn" style="background:#ff0000" data-color="#ff0000"></div>
-    <div class="color-btn" style="background:#ff8c00" data-color="#ff8c00"></div>
-    <div class="color-btn" style="background:#ffe600" data-color="#ffe600"></div>
-    <div class="color-btn" style="background:#00c853" data-color="#00c853"></div>
-    <div class="color-btn" style="background:#00b0ff" data-color="#00b0ff"></div>
-    <div class="color-btn" style="background:#7c4dff" data-color="#7c4dff"></div>
-    <div class="color-btn" style="background:#ff4081" data-color="#ff4081"></div>
-    <div class="color-btn" style="background:#8d5524" data-color="#8d5524"></div>
-    <div class="color-btn" style="background:#ffffff" data-color="#ffffff"></div>
-
-    <!-- Brush sizes -->
-    <div class="size-btn" data-size="4"><div class="size-dot" style="width:6px;height:6px"></div></div>
-    <div class="size-btn active" data-size="12"><div class="size-dot" style="width:14px;height:14px"></div></div>
-    <div class="size-btn" data-size="28"><div class="size-dot" style="width:24px;height:24px"></div></div>
-    <div class="size-btn" data-size="50"><div class="size-dot" style="width:36px;height:36px"></div></div>
-
-    <!-- Eraser -->
-    <button class="action-btn" id="eraserBtn">🧽 Eraser</button>
-
-    <!-- Clear -->
-    <button class="action-btn" id="clearBtn" style="background:#e74c3c">🗑️ Clear</button>
-
-    <!-- Save -->
-    <button class="action-btn" id="saveBtn" style="background:#00b894">💾 Save</button>
+  <!-- ===== TOP BAR ===== -->
+  <div id="topbar">
+    <h1>🎨 Kids Paint Studio</h1>
+    <button class="mode-tab active" id="tab-draw">🖌️ Free Draw</button>
+    <button class="mode-tab" id="tab-gallery">🖼️ Coloring Pages</button>
+    <button class="mode-tab" id="tab-maker">✨ Make a Picture</button>
+    <button class="mode-tab" id="tab-camera">📷 Photo to Paint</button>
   </div>
 
-  <div id="stickers">
-    <span class="sticker" data-sticker="⭐">⭐</span>
-    <span class="sticker" data-sticker="❤️">❤️</span>
-    <span class="sticker" data-sticker="🌈">🌈</span>
-    <span class="sticker" data-sticker="🌸">🌸</span>
-    <span class="sticker" data-sticker="🦋">🦋</span>
-    <span class="sticker" data-sticker="🐶">🐶</span>
-    <span class="sticker" data-sticker="🐱">🐱</span>
-    <span class="sticker" data-sticker="🚀">🚀</span>
-    <span class="sticker" data-sticker="🦄">🦄</span>
-    <span class="sticker" data-sticker="🍦">🍦</span>
-    <span class="sticker" data-sticker="🌻">🌻</span>
+  <!-- ===== MAIN ===== -->
+  <div id="main">
+    <div id="sidebar">
+      <div class="panel">
+        <h3>🎨 Colors</h3>
+        <div id="colors"></div>
+      </div>
+      <div class="panel">
+        <h3>🖌️ Brush Size</h3>
+        <div id="sizes"></div>
+      </div>
+      <div class="panel">
+        <h3>🧰 Tools</h3>
+        <div class="tool-grid">
+          <button class="tool-btn" id="tool-eraser">🧽 Eraser</button>
+          <button class="tool-btn" id="tool-undo">↩️ Undo</button>
+          <button class="tool-btn" id="tool-fill">🪣 Fill</button>
+          <button class="tool-btn" id="tool-symmetry">🦋 Mirror</button>
+          <button class="tool-btn danger" id="tool-clear">🗑️ Clear</button>
+          <button class="tool-btn save" id="tool-save">💾 Save</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>🌟 Stickers</h3>
+        <div id="stickers"></div>
+      </div>
+    </div>
+
+    <div id="canvas-wrap">
+      <canvas id="canvas"></canvas>
+      <div id="zoom-controls">
+        <button class="zoom-btn" id="zoom-out" title="Zoom out">−</button>
+        <button class="zoom-btn" id="zoom-in" title="Zoom in">+</button>
+      </div>
+    </div>
   </div>
 
-  <div id="canvas-wrap">
-    <canvas id="canvas"></canvas>
+  <!-- ===== GALLERY OVERLAY ===== -->
+  <div id="gallery-panel">
+    <button id="close-gallery">✕ Close</button>
+    <h2>🖼️ Pick a picture to color!</h2>
+    <div id="gallery-grid"></div>
   </div>
 
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const wrap = document.getElementById('canvas-wrap');
+  <!-- ===== PICTURE MAKER OVERLAY ===== -->
+  <div id="maker-overlay">
+    <div id="maker-box">
+      <h2>✨ Make Your Own Coloring Page</h2>
+      <p>Draw the OUTLINE of your picture here. Then it becomes a coloring page!</p>
+      <div id="maker-canvas-wrap">
+        <canvas id="maker-canvas"></canvas>
+      </div>
+      <div id="maker-tools">
+        <button class="maker-btn" id="maker-undo">↩️ Undo</button>
+        <button class="maker-btn danger" id="maker-clear">🗑️ Clear</button>
+        <button class="maker-btn" id="maker-cancel">✕ Cancel</button>
+        <button class="maker-btn primary" id="maker-use">🎨 Use as Coloring Page</button>
+      </div>
+    </div>
+  </div>
 
-    let currentColor = '#000000';
-    let currentSize = 12;
-    let isErasing = false;
-    let drawing = false;
-    let activeSticker = null;
+  <!-- ===== CAMERA OVERLAY ===== -->
+  <div id="camera-overlay">
+    <div id="camera-box">
+      <h2>📷 Turn a Photo into a Coloring Page</h2>
+      <p>Take a photo or upload one — we'll turn it into an outline you can paint!</p>
 
-    // ---- Resize canvas (with HiDPI support) ----
-    function resizeCanvas() {
-      // Save current drawing
-      const snapshot = document.createElement('canvas');
-      snapshot.width = canvas.width;
-      snapshot.height = canvas.height;
-      snapshot.getContext('2d').drawImage(canvas, 0, 0);
+      <!-- Step 1: preview -->
+      <div id="camera-preview-wrap">
+        <div id="camera-placeholder">
+          <span class="big">📷</span>
+          Take a photo or upload a picture to start
+        </div>
+        <video id="camera-video" autoplay playsinline muted></video>
+        <img id="camera-photo" alt="photo preview">
+      </div>
 
-      const dpr = window.devicePixelRatio || 1;
-      const w = wrap.clientWidth;
-      const h = wrap.clientHeight;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      ctx.scale(dpr, dpr);
+      <!-- Step 2: converted preview -->
+      <div id="converted-preview-wrap">
+        <img id="converted-preview" alt="outline preview">
+      </div>
 
-      // Restore drawing scaled to new size
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, w, h);
-      if (snapshot.width) {
-        ctx.drawImage(snapshot, 0, 0, w, h);
-      }
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+      <!-- Conversion controls -->
+      <div id="conversion-controls">
+        <div class="slider-row">
+          <label>
+            <span>✏️ Detail Level</span>
+            <span class="slider-value" id="detail-val">Medium</span>
+          </label>
+          <input type="range" id="detail-slider" min="1" max="10" value="5">
+        </div>
+        <div class="slider-row">
+          <label>
+            <span>🎚️ Line Thickness</span>
+            <span class="slider-value" id="thickness-val">2</span>
+          </label>
+          <input type="range" id="thickness-slider" min="1" max="5" value="2">
+        </div>
+        <div class="slider-row">
+          <label>
+            <span>🌈 Style</span>
+          </label>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="cam-btn secondary style-btn active" data-style="edges" style="padding:6px 12px;font-size:12px;">Outlines</button>
+            <button class="cam-btn secondary style-btn" data-style="dots" style="padding:6px 12px;font-size:12px;">Dots</button>
+            <button class="cam-btn secondary style-btn" data-style="posterize" style="padding:6px 12px;font-size:12px;">Chunky</button>
+          </div>
+        </div>
+      </div>
 
-    // ---- Coordinate helper ----
-    function getPos(e) {
-      const rect = canvas.getBoundingClientRect();
-      const point = e.touches ? e.touches[0] : e;
-      return {
-        x: point.clientX - rect.left,
-        y: point.clientY - rect.top
-      };
-    }
+      <!-- Controls -->
+      <div id="camera-controls">
+        <button class="cam-btn primary" id="cam-start">📷 Start Camera</button>
+        <button class="cam-btn shutter" id="cam-snap" style="display:none;">📸 Snap!</button>
+        <button class="cam-btn secondary" id="cam-upload">📁 Upload Photo</button>
+        <button class="cam-btn secondary" id="cam-cancel">✕ Cancel</button>
+        <button class="cam-btn success" id="cam-use" style="display:none;">🎨 Use as Coloring Page</button>
+      </div>
 
-    // ---- Drawing ----
-    function startDraw(e) {
-      e.preventDefault();
-      const pos = getPos(e);
+      <!-- Hidden file input -->
+      <input type="file" id="file-input" accept="image/*" style="display:none;">
+      <!-- Hidden canvas for processing -->
+      <canvas id="process-canvas" style="display:none;"></canvas>
+    </div>
+  </div>
 
-      // Sticker mode: stamp emoji
-      if (activeSticker) {
-        ctx.font = `${currentSize * 4}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(activeSticker, pos.x, pos.y);
-        return;
-      }
+  <!-- ===== TOAST ===== -->
+  <div id="toast"></div>
 
-      drawing = true;
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y);
-      ctx.lineTo(pos.x + 0.01, pos.y + 0.01);
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = isErasing ? '#ffffff' : currentColor;
-      ctx.lineWidth = currentSize;
-      ctx.stroke();
-    }
+<script>
+/* ==========================================================
+   1. SETUP
+   ========================================================== */
+const canvas   = document.getElementById('canvas');
+const ctx      = canvas.getContext('2d');
+const wrap     = document.getElementById('canvas-wrap');
 
-    function moveDraw(e) {
-      if (!drawing) return;
-      e.preventDefault();
-      const pos = getPos(e);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
-    }
+let currentColor = '#000000';
+let currentSize  = 10;
+let isErasing    = false;
+let isFilling    = false;
+let isSymmetry   = false;
+let activeSticker = null;
+let drawing      = false;
 
-    function endDraw(e) {
-      if (drawing) e.preventDefault();
-      drawing = false;
-      ctx.beginPath();
-    }
+const undoStack = [];
+const MAX_UNDO  = 20;
 
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', moveDraw);
-    canvas.addEventListener('mouseup', endDraw);
-    canvas.addEventListener('mouseleave', endDraw);
+let zoom = 1;
+let panX = 0, panY = 0;
 
-    canvas.addEventListener('touchstart', startDraw, { passive: false });
-    canvas.addEventListener('touchmove', moveDraw, { passive: false });
-    canvas.addEventListener('touchend', endDraw);
-    canvas.addEventListener('touchcancel', endDraw);
+/* ==========================================================
+   2. CANVAS SIZING
+   ========================================================== */
+function setupCanvas(cv, cx, wrapper) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = wrapper.clientWidth;
+  const h = wrapper.clientHeight;
+  cv.width  = w * dpr;
+  cv.height = h * dpr;
+  cv.style.width  = w + 'px';
+  cv.style.height = h + 'px';
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cx.fillStyle = '#ffffff';
+  cx.fillRect(0, 0, w, h);
+}
 
-    // ---- Color selection ----
-    document.querySelectorAll('.color-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentColor = btn.dataset.color;
-        isErasing = false;
-        activeSticker = null;
-        document.getElementById('eraserBtn').classList.remove('eraser-on');
-      });
-    });
+function resizeMain() {
+  const snap = document.createElement('canvas');
+  snap.width = canvas.width;
+  snap.height = canvas.height;
+  snap.getContext('2d').drawImage(canvas, 0, 0);
 
-    // ---- Size selection ----
-    document.querySelectorAll('.size-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentSize = parseInt(btn.dataset.size);
-      });
-    });
+  setupCanvas(canvas, ctx, wrap);
+  const newW = parseFloat(canvas.style.width);
+  const newH = parseFloat(canvas.style.height);
 
-    // ---- Eraser ----
-    document.getElementById('eraserBtn').addEventListener('click', function() {
-      isErasing = !isErasing;
-      this.classList.toggle('eraser-on', isErasing);
+  const tmp = document.createElement('canvas');
+  tmp.width = newW; tmp.height = newH;
+  const tctx = tmp.getContext('2d');
+  tctx.fillStyle = '#ffffff';
+  tctx.fillRect(0, 0, newW, newH);
+  if (snap.width) tctx.drawImage(snap, 0, 0, newW, newH);
+
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.drawImage(tmp, 0, 0, canvas.width, canvas.height);
+  ctx.restore();
+
+  applyTransform();
+}
+
+window.addEventListener('resize', resizeMain);
+
+/* ==========================================================
+   3. ZOOM
+   ========================================================== */
+function applyTransform() {
+  canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+  canvas.style.transformOrigin = 'center center';
+}
+applyTransform();
+document.getElementById('zoom-in').onclick  = () => { zoom = Math.min(3, zoom + 0.2); applyTransform(); };
+document.getElementById('zoom-out').onclick = () => { zoom = Math.max(0.5, zoom - 0.2); applyTransform(); };
+
+/* ==========================================================
+   4. COLORS, SIZES, STICKERS
+   ========================================================== */
+const COLORS = ['#000000','#ffffff','#8d5524','#ff0000','#ff8c00','#ffe600',
+                '#00c853','#00b0ff','#7c4dff','#ff4081','#00bcd4','#ff69b4',
+                '#c0c0c0','#4a4a4a','#a0522d','#2ecc71','#3498db','#9b59b6'];
+const colorsDiv = document.getElementById('colors');
+COLORS.forEach((c, i) => {
+  const b = document.createElement('div');
+  b.className = 'color-btn' + (i === 0 ? ' active' : '');
+  b.style.background = c;
+  b.dataset.color = c;
+  b.onclick = () => {
+    document.querySelectorAll('.color-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentColor = c;
+    isErasing = false; isFilling = false; activeSticker = null;
+    document.querySelectorAll('.tool-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.sticker').forEach(x => x.classList.remove('active'));
+  };
+  colorsDiv.appendChild(b);
+});
+
+const SIZES = [4, 10, 20, 40];
+const sizesDiv = document.getElementById('sizes');
+SIZES.forEach((s, i) => {
+  const b = document.createElement('div');
+  b.className = 'size-btn' + (i === 1 ? ' active' : '');
+  b.dataset.size = s;
+  const dot = document.createElement('div');
+  dot.className = 'size-dot';
+  const d = Math.min(s, 28);
+  dot.style.width = d + 'px'; dot.style.height = d + 'px';
+  b.appendChild(dot);
+  b.onclick = () => {
+    document.querySelectorAll('.size-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentSize = s;
+  };
+  sizesDiv.appendChild(b);
+});
+
+const STICKER_LIST = ['⭐','❤️','🌈','🌸','🦋','🐶','🐱','🚀','🦄','🍦',
+                      '🌻','🐢','🐟','🍎','🌙','☀️','🎈','🍩','🐸','🦕'];
+const stickersDiv = document.getElementById('stickers');
+STICKER_LIST.forEach(s => {
+  const el = document.createElement('div');
+  el.className = 'sticker';
+  el.textContent = s;
+  el.dataset.sticker = s;
+  el.onclick = () => {
+    if (activeSticker === s) {
       activeSticker = null;
-    });
+      el.classList.remove('active');
+    } else {
+      activeSticker = s;
+      isErasing = false; isFilling = false;
+      document.querySelectorAll('.sticker').forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.tool-btn').forEach(x => x.classList.remove('active'));
+    }
+  };
+  stickersDiv.appendChild(el);
+});
 
-    // ---- Clear ----
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      if (confirm('Clear the whole drawing?')) {
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-    });
-
-    // ---- Save ----
-    document.getElementById('saveBtn').addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.download = 'my-artwork.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
-
-    // ---- Stickers ----
-    document.querySelectorAll('.sticker').forEach(el => {
-      el.addEventListener('click', () => {
-        activeSticker = el.dataset.sticker;
-        isErasing = false;
-        document.getElementById('eraserBtn').classList.remove('eraser-on');
-      });
-    });
-
-    // Initial white background
+/* ==========================================================
+   5. TOOLS
+   ========================================================== */
+document.getElementById('tool-eraser').onclick = function() {
+  isErasing = !isErasing; isFilling = false; activeSticker = null;
+  this.classList.toggle('active', isErasing);
+  document.querySelectorAll('.sticker').forEach(x => x.classList.remove('active'));
+};
+document.getElementById('tool-fill').onclick = function() {
+  isFilling = !isFilling; isErasing = false; activeSticker = null;
+  this.classList.toggle('active', isFilling);
+  document.querySelectorAll('.sticker').forEach(x => x.classList.remove('active'));
+};
+document.getElementById('tool-symmetry').onclick = function() {
+  isSymmetry = !isSymmetry;
+  this.classList.toggle('active', isSymmetry);
+};
+document.getElementById('tool-undo').onclick = () => {
+  if (undoStack.length > 0) {
+    const prev = undoStack.pop();
+    const img = new Image();
+    img.onload = () => {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      ctx.restore();
+    };
+    img.src = prev;
+  } else toast('Nothing to undo!');
+};
+document.getElementById('tool-clear').onclick = () => {
+  if (confirm('Clear the whole drawing?')) {
+    pushUndo();
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-  </script>
+    ctx.restore();
+  }
+};
+document.getElementById('tool-save').onclick = () => {
+  const link = document.createElement('a');
+  link.download = 'my-artwork-' + Date.now() + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  toast('Saved! 🎉');
+};
 
+/* ==========================================================
+   6. UNDO
+   ========================================================== */
+function pushUndo() {
+  undoStack.push(canvas.toDataURL());
+  if (undoStack.length > MAX_UNDO) undoStack.shift();
+}
+
+/* ==========================================================
+   7. DRAWING
+   ========================================================== */
+function getCanvasPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const point = e.touches ? e.touches[0] : e;
+  return {
+    x: (point.clientX - rect.left) / zoom,
+    y: (point.clientY - rect.top) / zoom
+  };
+}
+
+function startDraw(e) {
+  e.preventDefault();
+  pushUndo();
+  const pos = getCanvasPos(e);
+
+  if (activeSticker) {
+    ctx.font = `${currentSize * 5}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(activeSticker, pos.x, pos.y);
+    if (isSymmetry) {
+      const midX = wrap.clientWidth / 2;
+      ctx.fillText(activeSticker, midX * 2 - pos.x, pos.y);
+    }
+    return;
+  }
+
+  if (isFilling) { floodFill(pos.x, pos.y, currentColor); return; }
+
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+  ctx.lineTo(pos.x + 0.01, pos.y + 0.01);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = isErasing ? '#ffffff' : currentColor;
+  ctx.lineWidth = currentSize;
+  ctx.stroke();
+}
+
+function moveDraw(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  const pos = getCanvasPos(e);
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  if (isSymmetry) {
+    const midX = wrap.clientWidth / 2;
+    ctx.lineTo(midX * 2 - pos.x, pos.y);
+    ctx.stroke();
+  }
+}
+
+function endDraw(e) {
+  if (drawing) e.preventDefault();
+  drawing = false;
+  ctx.beginPath();
+}
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', moveDraw);
+canvas.addEventListener('mouseup', endDraw);
+canvas.addEventListener('mouseleave', endDraw);
+canvas.addEventListener('touchstart', startDraw, { passive: false });
+canvas.addEventListener('touchmove', moveDraw, { passive: false });
+canvas.addEventListener('touchend', endDraw);
+canvas.addEventListener('touchcancel', endDraw);
+
+/* ==========================================================
+   8. FLOOD FILL
+   ========================================================== */
+function floodFill(x, y, fillColor) {
+  const w = canvas.width, h = canvas.height;
+  const dpr = window.devicePixelRatio || 1;
+  const px = Math.floor(x * dpr), py = Math.floor(y * dpr);
+  if (px < 0 || py < 0 || px >= w || py >= h) return;
+
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const data = imgData.data;
+  const idx = (x, y) => (y * w + x) * 4;
+
+  const s = idx(px, py);
+  const sr = data[s], sg = data[s+1], sb = data[s+2], sa = data[s+3];
+  const fc = hexToRgb(fillColor);
+  if (!fc) return;
+  if (sr === fc.r && sg === fc.g && sb === fc.b) return;
+
+  const stack = [[px, py]];
+  const visited = new Uint8Array(w * h);
+  const tol = 40;
+
+  while (stack.length) {
+    const [cx, cy] = stack.pop();
+    if (cx < 0 || cy < 0 || cx >= w || cy >= h) continue;
+    const vi = cy * w + cx;
+    if (visited[vi]) continue;
+    visited[vi] = 1;
+    const i = idx(cx, cy);
+    if (Math.abs(data[i] - sr) > tol || Math.abs(data[i+1] - sg) > tol ||
+        Math.abs(data[i+2] - sb) > tol || Math.abs(data[i+3] - sa) > tol) continue;
+    data[i] = fc.r; data[i+1] = fc.g; data[i+2] = fc.b; data[i+3] = 255;
+    stack.push([cx+1, cy], [cx-1, cy], [cx, cy+1], [cx, cy-1]);
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+
+function hexToRgb(hex) {
+  const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  return m ? { r: parseInt(m[1],16), g: parseInt(m[2],16), b: parseInt(m[3],16) } : null;
+}
+
+/* ==========================================================
+   9. GALLERY
+   ========================================================== */
+const GALLERY = [
+  { name: '🏠 House',    draw: drawHouse },
+  { name: '🌸 Flower',   draw: drawFlower },
+  { name: '🐟 Fish',     draw: drawFish },
+  { name: '🌞 Sun', draw: drawSun },
+  { name: '🚗 Car',      draw: drawCar }
+];
+
+/* ==========================================================
+   10. GALLERY DRAWING FUNCTIONS (outline-only for coloring)
+   ========================================================== */
+function drawHouse(c, w, h) {
+  c.save();
+  c.strokeStyle = '#333';
+  c.lineWidth = 3;
+  c.lineJoin = 'round';
+  const cx = w / 2, cy = h / 2;
+  const s = Math.min(w, h) * 0.55;
+  // base
+  c.strokeRect(cx - s/2, cy - s/6, s, s/2);
+  // roof
+  c.beginPath();
+  c.moveTo(cx - s/2 - s*0.1, cy - s/6);
+  c.lineTo(cx, cy - s/2);
+  c.lineTo(cx + s/2 + s*0.1, cy - s/6);
+  c.closePath();
+  c.stroke();
+  // door
+  c.strokeRect(cx - s*0.12, cy + s*0.13, s*0.24, s*0.2);
+  // windows
+  c.strokeRect(cx + s*0.15, cy + s*0.02, s*0.15, s*0.15);
+  c.strokeRect(cx - s*0.3, cy + s*0.02, s*0.15, s*0.15);
+  // chimney
+  c.strokeRect(cx + s*0.22, cy - s*0.45, s*0.1, s*0.15);
+  c.restore();
+}
+
+function drawFlower(c, w, h) {
+  c.save();
+  c.strokeStyle = '#333';
+  c.lineWidth = 3;
+  c.lineJoin = 'round';
+  const cx = w / 2, cy = h / 2;
+  const r = Math.min(w, h) * 0.12;
+  // stem
+  c.beginPath();
+  c.moveTo(cx, cy + r);
+  c.lineTo(cx, cy + r * 3);
+  c.stroke();
+  // leaf
+  c.beginPath();
+  c.ellipse(cx + r*0.8, cy + r*2, r*0.7, r*0.35, Math.PI/4, 0, Math.PI*2);
+  c.stroke();
+  // petals
+  for (let i = 0; i < 6; i++) {
+    const angle = (i / 6) * Math.PI * 2;
+    c.beginPath();
+    c.ellipse(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r,
+              r*0.65, r*0.4, angle, 0, Math.PI*2);
+    c.stroke();
+  }
+  // center
+  c.beginPath();
+  c.arc(cx, cy, r*0.55, 0, Math.PI*2);
+  c.stroke();
+  c.restore();
+}
+
+function drawFish(c, w, h) {
+  c.save();
+  c.strokeStyle = '#333';
+  c.lineWidth = 3;
+  c.lineJoin = 'round';
+  const cx = w / 2, cy = h / 2;
+  const r = Math.min(w, h) * 0.18;
+  // body
+  c.beginPath();
+  c.ellipse(cx, cy, r*1.4, r*0.85, 0, 0, Math.PI*2);
+  c.stroke();
+  // tail
+  c.beginPath();
+  c.moveTo(cx + r*1.35, cy);
+  c.lineTo(cx + r*2, cy - r*0.7);
+  c.lineTo(cx + r*2, cy + r*0.7);
+  c.closePath();
+  c.stroke();
+  // eye
+  c.beginPath();
+  c.arc(cx - r*0.6, cy - r*0.15, r*0.18, 0, Math.PI*2);
+  c.stroke();
+  // fin
+  c.beginPath();
+  c.moveTo(cx - r*0.2, cy - r*0.75);
+  c.quadraticCurveTo(cx, cy - r*1.2, cx + r*0.4, cy - r*0.75);
+  c.stroke();
+  // scales
+  c.beginPath();
+  c.arc(cx - r*0.1, cy + r*0.1, r*0.3, 0, Math.PI);
+  c.stroke();
+  c.restore();
+}
+
+function drawCat(c, w, h) {
+  c.save();
+  c.strokeStyle = '#333';
+  c.lineWidth = 3;
+  c.lineJoin = 'round';
+  const cx = w / 2, cy = h / 2;
+  const r = Math.min(w, h) * 0.2;
+  // head
+  c.beginPath();
+  c.arc(cx, cy, r, 0, Math.PI*2);
+  c.stroke();
+  // ears
+  c.beginPath();
+  c.moveTo(cx - r*0.75, cy - r*0.6);
+  c.lineTo(cx - r*0.9, cy - r*1.3);
+  c.lineTo(cx - r*0.3, cy - r*0.85);
+  c.stroke();
+  c.beginPath();
+  c.moveTo(cx + r*0.75, cy - r*0.6);
+  c.lineTo(cx + r*0.9, cy - r*1.3);
+  c.lineTo(cx + r*0.3, cy - r*0.85);
+  c.stroke();
+  // eyes
+  c.beginPath();
+  c.arc(cx - r*0.35, cy - r*0.1, r*0.12, 0, Math.PI*2);
+  c.stroke();
+  c.beginPath();
+  c.arc(cx + r*0.35, cy - r*0.1, r*0.12, 0, Math.PI*2);
+  c.stroke();
+  // nose
+  c.beginPath();
+  c.moveTo(cx, cy + r*0.2);
+  c.lineTo(cx - r*0.1, cy + r*0.35);
+  c.lineTo(cx + r*0.1, cy + r*0.35);
+  c.closePath();
+  c.stroke();
+  // mouth
+  c.beginPath();
+  c.moveTo(cx, cy + r*0.35);
+  c.quadraticCurveTo(cx - r*0.2, cy + r*0.55, cx - r*0.35, cy + r*0.45);
+  c.moveTo(cx, cy + r*0.35);
+  c.quadraticCurveTo(cx + r*0.2, cy + r*0.55, cx + r*0.35, cy + r*0.45);
+  c.stroke();
+  // whiskers
+  c.beginPath();
+  c.moveTo(cx - r*0.35, cy + r*0.35);
+  c.lineTo(cx - r*0.9, cy + r*0.2);
+  c.moveTo(cx - r*0.35, cy + r*0.4);
+  c.lineTo(cx - r*0.9, cy + r*0.45);
+  c.moveTo(cx + r*0.35, cy + r*0.35);
+  c.lineTo(cx + r*0.9, cy + r*0.2);
+  c.moveTo(cx + r*0.35, cy + r*0.4);
+  c.lineTo(cx + r*0.9, cy + r*0.45);
+  c.stroke();
+  c.restore();
+}
+
+function drawStar(c, w, h) {
+  c.save();
+  c.strokeStyle = '#333';
+  c.lineWidth = 3;
+  c.lineJoin = 'round';
+  const cx = w / 2, cy = h / 2;
+  const outer = Math.min(w, h) * 0.32;
+  const inner = outer * 0.42;
+  c.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const angle = (i * Math.PI / 5) - Math.PI / 2;
+    const r = i % 2 === 0 ? outer : inner;
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+    if (i === 0) c.moveTo(x, y);
+    else c.lineTo(x, y);
+  }
+  c.closePath();
+  c.stroke();
+  c.restore();
+}
+
+function drawTree(c, w, h) {
+  c.save();
+  c.strokeStyle = '#333';
+  c.lineWidth = 3;
+  c.lineJoin = 'round';
+  const cx = w / 2, cy = h / 2;
+  const r = Math.min(w, h) * 0.18;
+  // trunk
+  c.strokeRect(cx - r*0.3, cy + r*0.8, r*0.6, r*1.5);
+  // foliage (overlapping circles)
+  c.beginPath();
+  c.arc(cx, cy, r*1.2, 0, Math.PI*2);
+  c.stroke();
+  c.beginPath();
+  c.arc(cx - r*0.8, cy + r*0.3, r*0.8, 0, Math.PI*2);
+  c.stroke();
+  c.beginPath();
+  c.arc(cx + r*0.8, cy + r*0.3, r*0.8, 0, Math.PI*2);
+  c.stroke();
+  c.restore();
+}
+
+function drawSun(c, w, h) {
+  c.save();
+  c.strokeStyle = '#333';
+  c.lineWidth = 3;
+  c.lineJoin = 'round';
+  const cx = w / 2, cy = h / 2;
+  const r = Math.min(w, h) * 0.18;
+  // center
+  c.beginPath();
+  c.arc(cx, cy, r, 0, Math.PI*2);
+  c.stroke();
+  // rays
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2;
+    c.beginPath();
+    c.moveTo(cx + Math.cos(angle) * r * 1.3, cy + Math.sin(angle) * r * 1.3);
+    c.lineTo(cx + Math.cos(angle) * r * 2, cy + Math.sin(angle) * r * 2);
+    c.stroke();
+  }
+  // face
+  c.beginPath();
+  c.arc(cx - r*0.35, cy - r*0.1, r*0.1, 0, Math.PI*2);
+  c.stroke();
+  c.beginPath();
+  c.arc(cx + r*0.35, cy - r*0.1, r*0.1, 0, Math.PI*2);
+  c.stroke();
+  c.beginPath();
+  c.arc(cx, cy + r*0.15, r*0.35, 0.15 * Math.PI, 0.85 * Math.PI);
+  c.stroke();
+  c.restore();
+}
+
+function drawCar(c, w, h) {
+  c.save();
+  c.strokeStyle = '#333';
+  c.lineWidth = 3;
+  c.lineJoin = 'round';
+  const cx = w / 2, cy = h / 2;
+  const s = Math.min(w, h) * 0.4;
+  // body
+  c.beginPath();
+  c.moveTo(cx - s, cy + s*0.2);
+  c.lineTo(cx - s, cy - s*0.1);
+  c.lineTo(cx - s*0.6, cy - s*0.1);
+  c.lineTo(cx - s*0.3, cy - s*0.5);
+  c.lineTo(cx + s*0.4, cy - s*0.5);
+  c.lineTo(cx + s*0.7, cy - s*0.1);
+  c.lineTo(cx + s, cy - s*0.1);
+  c.lineTo(cx + s, cy + s*0.2);
+  c.closePath();
+  c.stroke();
+  // wheels
+  c.beginPath();
+  c.arc(cx - s*0.55, cy + s*0.3, s*0.22, 0, Math.PI*2);
+  c.stroke();
+  c.beginPath();
+  c.arc(cx + s*0.55, cy + s*0.3, s*0.22, 0, Math.PI*2);
+  c.stroke();
+  // windows
+  c.strokeRect(cx - s*0.45, cy - s*0.35, s*0.35, s*0.25);
+  c.strokeRect(cx + s*0.05, cy - s*0.35, s*0.35, s*0.25);
+  c.restore();
+}
+
+/* ==========================================================
+   11. GALLERY UI
+   ========================================================== */
+const galleryPanel = document.getElementById('gallery-panel');
+const galleryGrid  = document.getElementById('gallery-grid');
+
+function buildGallery() {
+  galleryGrid.innerHTML = '';
+  GALLERY.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'gallery-item';
+    const cv = document.createElement('canvas');
+    const previewW = 160, previewH = 120;
+    cv.width = previewW * 2;
+    cv.height = previewH * 2;
+    const c = cv.getContext('2d');
+    c.scale(2, 2);
+    c.fillStyle = '#ffffff';
+    c.fillRect(0, 0, previewW, previewH);
+    item.draw(c, previewW, previewH);
+    cv.style.width = '100%';
+    cv.style.height = 'auto';
+    const label = document.createElement('p');
+    label.textContent = item.name;
+    div.appendChild(cv);
+    div.appendChild(label);
+    div.onclick = () => loadColoringPage(item);
+    galleryGrid.appendChild(div);
+  });
+}
+
+function loadColoringPage(item) {
+  // Load outline onto main canvas scaled to fit
+  const w = parseFloat(canvas.style.width);
+  const h = parseFloat(canvas.style.height);
+
+  pushUndo();
+
+  ctx.save();
+  ctx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, w, h);
+  item.draw(ctx, w, h);
+  ctx.restore();
+
+  galleryPanel.classList.remove('show');
+  setActiveTab('draw');
+  toast('Now color it in! 🖍️');
+}
+
+document.getElementById('close-gallery').onclick = () => {
+  galleryPanel.classList.remove('show');
+  setActiveTab('draw');
+};
+
+/* ==========================================================
+   12. TAB SWITCHING
+   ========================================================== */
+const tabDraw    = document.getElementById('tab-draw');
+const tabGallery = document.getElementById('tab-gallery');
+const tabMaker   = document.getElementById('tab-maker');
+const tabCamera  = document.getElementById('tab-camera');
+
+function setActiveTab(which) {
+  [tabDraw, tabGallery, tabMaker, tabCamera].forEach(t => t.classList.remove('active'));
+  if (which === 'draw')    tabDraw.classList.add('active');
+  if (which === 'gallery') tabGallery.classList.add('active');
+  if (which === 'maker')   tabMaker.classList.add('active');
+  if (which === 'camera')  tabCamera.classList.add('active');
+}
+
+tabDraw.onclick = () => {
+  setActiveTab('draw');
+  galleryPanel.classList.remove('show');
+};
+
+tabGallery.onclick = () => {
+  setActiveTab('gallery');
+  buildGallery();
+  galleryPanel.classList.add('show');
+};
+
+tabMaker.onclick = () => {
+  setActiveTab('maker');
+  openMaker();
+};
+
+tabCamera.onclick = () => {
+  setActiveTab('camera');
+  openCamera();
+};
+
+/* ==========================================================
+   13. PICTURE MAKER
+   ========================================================== */
+const makerOverlay = document.getElementById('maker-overlay');
+const makerCanvas  = document.getElementById('maker-canvas');
+const makerWrap    = document.getElementById('maker-canvas-wrap');
+let makerCtx       = makerCanvas.getContext('2d');
+let makerDrawing   = false;
+let makerUndoStack = [];
+const MAX_MAKER_UNDO = 15;
+
+function sizeMakerCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const w = makerWrap.clientWidth;
+  const h = makerWrap.clientHeight;
+  makerCanvas.width  = w * dpr;
+  makerCanvas.height = h * dpr;
+  makerCanvas.style.width  = w + 'px';
+  makerCanvas.style.height = h + 'px';
+  makerCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  makerCtx.fillStyle = '#ffffff';
+  makerCtx.fillRect(0, 0, w, h);
+}
+
+function openMaker() {
+  makerOverlay.classList.add('show');
+  // Wait a frame so the wrap has its real size
+  requestAnimationFrame(() => {
+    sizeMakerCanvas();
+    makerUndoStack = [];
+  });
+}
+
+function closeMaker() {
+  makerOverlay.classList.remove('show');
+  setActiveTab('draw');
+}
+
+function makerGetPos(e) {
+  const rect = makerCanvas.getBoundingClientRect();
+  const p = e.touches ? e.touches[0] : e;
+  return {
+    x: p.clientX - rect.left,
+    y: p.clientY - rect.top
+  };
+}
+
+function makerPushUndo() {
+  makerUndoStack.push(makerCanvas.toDataURL());
+  if (makerUndoStack.length > MAX_MAKER_UNDO) makerUndoStack.shift();
+}
+
+function makerStart(e) {
+  e.preventDefault();
+  makerPushUndo();
+  makerDrawing = true;
+  const pos = makerGetPos(e);
+  makerCtx.beginPath();
+  makerCtx.moveTo(pos.x, pos.y);
+  makerCtx.lineTo(pos.x + 0.01, pos.y + 0.01);
+  makerCtx.lineCap = 'round';
+  makerCtx.lineJoin = 'round';
+  makerCtx.strokeStyle = '#222';
+  makerCtx.lineWidth = 3;
+  makerCtx.stroke();
+}
+
+function makerMove(e) {
+  if (!makerDrawing) return;
+  e.preventDefault();
+  const pos = makerGetPos(e);
+  makerCtx.lineTo(pos.x, pos.y);
+  makerCtx.stroke();
+}
+
+function makerEnd(e) {
+  if (makerDrawing) e.preventDefault();
+  makerDrawing = false;
+  makerCtx.beginPath();
+}
+
+makerCanvas.addEventListener('mousedown', makerStart);
+makerCanvas.addEventListener('mousemove', makerMove);
+makerCanvas.addEventListener('mouseup', makerEnd);
+makerCanvas.addEventListener('mouseleave', makerEnd);
+makerCanvas.addEventListener('touchstart', makerStart, { passive: false });
+makerCanvas.addEventListener('touchmove', makerMove, { passive: false });
+makerCanvas.addEventListener('touchend', makerEnd);
+makerCanvas.addEventListener('touchcancel', makerEnd);
+
+document.getElementById('maker-undo').onclick = () => {
+  if (makerUndoStack.length > 0) {
+    const prev = makerUndoStack.pop();
+    const img = new Image();
+    img.onload = () => {
+      makerCtx.save();
+      makerCtx.setTransform(1, 0, 0, 1, 0, 0);
+      makerCtx.clearRect(0, 0, makerCanvas.width, makerCanvas.height);
+      makerCtx.drawImage(img, 0, 0);
+      makerCtx.restore();
+    };
+    img.src = prev;
+  } else {
+    toast('Nothing to undo!');
+  }
+};
+
+document.getElementById('maker-clear').onclick = () => {
+  makerPushUndo();
+  const dpr = window.devicePixelRatio || 1;
+  makerCtx.save();
+  makerCtx.setTransform(1, 0, 0, 1, 0, 0);
+  makerCtx.fillStyle = '#ffffff';
+  makerCtx.fillRect(0, 0, makerCanvas.width, makerCanvas.height);
+  makerCtx.restore();
+  makerCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+};
+
+document.getElementById('maker-cancel').onclick = closeMaker;
+
+document.getElementById('maker-use').onclick = () => {
+  const mw = makerCanvas.width;
+  const mh = makerCanvas.height;
+  const dpr = window.devicePixelRatio || 1;
+
+  // Read maker pixels
+  const imgData = makerCtx.getImageData(0, 0, mw, mh);
+  const srcData = imgData.data;
+
+  // Target canvas dims
+  const tw = parseFloat(canvas.style.width);
+  const th = parseFloat(canvas.style.height);
+
+  pushUndo();
+
+  ctx.save();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, tw, th);
+  ctx.restore();
+
+  // Scale maker content to fit target canvas
+  const scale = Math.min(tw / (mw / dpr), th / (mh / dpr));
+  const drawW = (mw / dpr) * scale;
+  const drawH = (mh / dpr) * scale;
+  const offX = (tw - drawW) / 2;
+  const offY = (th - drawH) / 2;
+
+  // Create a temporary canvas to hold the maker image at proper resolution
+  const tmp = document.createElement('canvas');
+  tmp.width = mw;
+  tmp.height = mh;
+  tmp.getContext('2d').putImageData(imgData, 0, 0);
+
+  ctx.save();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.drawImage(tmp, offX, offY, drawW, drawH);
+  ctx.restore();
+
+  closeMaker();
+  toast('Your coloring page is ready! 🎨');
+};
+
+/* ==========================================================
+   14. CAMERA / PHOTO TO PAINT
+   ========================================================== */
+const cameraOverlay  = document.getElementById('camera-overlay');
+const camVideo       = document.getElementById('camera-video');
+const camPhoto       = document.getElementById('camera-photo');
+const camPlaceholder = document.getElementById('camera-placeholder');
+const camStartBtn    = document.getElementById('cam-start');
+const camSnapBtn     = document.getElementById('cam-snap');
+const camUploadBtn   = document.getElementById('cam-upload');
+const camCancelBtn   = document.getElementById('cam-cancel');
+const camUseBtn      = document.getElementById('cam-use');
+const fileInput      = document.getElementById('file-input');
+const processCanvas  = document.getElementById('process-canvas');
+const convertedWrap  = document.getElementById('converted-preview-wrap');
+const convertedImg   = document.getElementById('converted-preview');
+const conversionCtrl = document.getElementById('conversion-controls');
+const detailSlider   = document.getElementById('detail-slider');
+const thicknessSlider = document.getElementById('thickness-slider');
+const detailVal      = document.getElementById('detail-val');
+const thicknessVal   = document.getElementById('thickness-val');
+
+let cameraStream = null;
+let currentSource = null; // HTMLImageElement or HTMLCanvasElement
+let convertedDataURL = null;
+let currentStyle = 'edges';
+
+function openCamera() {
+  cameraOverlay.classList.add('show');
+  resetCameraUI();
+}
+
+function closeCamera() {
+  stopCamera();
+  cameraOverlay.classList.remove('show');
+  resetCameraUI();
+  setActiveTab('draw');
+}
+
+function resetCameraUI() {
+  camVideo.style.display = 'none';
+  camPhoto.style.display = 'none';
+  camPhoto.src = '';
+  camPlaceholder.style.display = 'block';
+  camStartBtn.style.display = '';
+  camSnapBtn.style.display = 'none';
+  camUploadBtn.style.display = '';
+  camUseBtn.style.display = 'none';
+  convertedWrap.classList.remove('show');
+  conversionCtrl.classList.remove('show');
+  convertedDataURL = null;
+  currentSource = null;
+  currentStyle = 'edges';
+  document.querySelectorAll('.style-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.style === 'edges');
+  });
+  detailSlider.value = 5;
+  thicknessSlider.value = 2;
+  updateSliderLabels();
+}
+
+function updateSliderLabels() {
+  const d = parseInt(detailSlider.value);
+  const detailNames = ['Very Low','Low','Low','Medium-Low','Medium','Medium','Medium-High','High','High','Very High'];
+  detailVal.textContent = detailNames[d - 1];
+  thicknessVal.textContent = thicknessSlider.value;
+}
+
+detailSlider.addEventListener('input', updateSliderLabels);
+thicknessSlider.addEventListener('input', updateSliderLabels);
+detailSlider.addEventListener('change', () => { if (currentSource) reconvert(); });
+thicknessSlider.addEventListener('change', () => { if (currentSource) reconvert(); });
+
+document.querySelectorAll('.style-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentStyle = btn.dataset.style;
+    if (currentSource) reconvert();
+  };
+});
+
+async function startCamera() {
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment' },
+      audio: false
+    });
+    camVideo.srcObject = cameraStream;
+    camVideo.style.display = 'block';
+    camPhoto.style.display = 'none';
+    camPlaceholder.style.display = 'none';
+    camStartBtn.style.display = 'none';
+    camSnapBtn.style.display = '';
+    camUploadBtn.style.display = '';
+    camUseBtn.style.display = 'none';
+    convertedWrap.classList.remove('show');
+    conversionCtrl.classList.remove('show');
+  } catch (err) {
+    toast('Camera not available. Try uploading a photo instead. 📁');
+    console.warn('Camera error:', err);
+  }
+}
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(t => t.stop());
+    cameraStream = null;
+  }
+  camVideo.srcObject = null;
+}
+
+function snapPhoto() {
+  if (!cameraStream) return;
+  const vw = camVideo.videoWidth || 640;
+  const vh = camVideo.videoHeight || 480;
+  const c = document.createElement('canvas');
+  c.width = vw;
+  c.height = vh;
+  c.getContext('2d').drawImage(camVideo, 0, 0, vw, vh);
+  const dataURL = c.toDataURL('image/png');
+  loadPhotoFromDataURL(dataURL);
+}
+
+function loadPhotoFromDataURL(dataURL) {
+  const img = new Image();
+  img.onload = () => {
+    stopCamera();
+    currentSource = img;
+    camPhoto.src = dataURL;
+    camPhoto.style.display = 'block';
+    camVideo.style.display = 'none';
+    camPlaceholder.style.display = 'none';
+    camStartBtn.style.display = '';
+    camSnapBtn.style.display = 'none';
+    camUploadBtn.style.display = '';
+    camUseBtn.style.display = 'none';
+    convertedWrap.classList.remove('show');
+    conversionCtrl.classList.remove('show');
+    reconvert();
+  };
+  img.src = dataURL;
+}
+
+function reconvert() {
+  if (!currentSource) return;
+
+  const img = currentSource;
+  const maxDim = 800;
+  let w = img.naturalWidth || img.width;
+  let h = img.naturalHeight || img.height;
+  const scale = Math.min(1, maxDim / Math.max(w, h));
+  w = Math.round(w * scale);
+  h = Math.round(h * scale);
+
+  processCanvas.width = w;
+  processCanvas.height = h;
+  const pctx = processCanvas.getContext('2d');
+  pctx.fillStyle = '#ffffff';
+  pctx.fillRect(0, 0, w, h);
+  pctx.drawImage(img, 0, 0, w, h);
+
+  const srcData = pctx.getImageData(0, 0, w, h);
+  const out = pctx.createImageData(w, h);
+
+  const detail = parseInt(detailSlider.value);       // 1..10
+  const thickness = parseInt(thicknessSlider.value); // 1..5
+  const style = currentStyle;
+
+  if (style === 'edges') {
+    convertToEdges(srcData, out, w, h, detail, thickness);
+  } else if (style === 'dots') {
+    convertToDots(srcData, out, w, h, detail);
+  } else if (style === 'posterize') {
+    convertToPosterize(srcData, out, w, h, detail);
+  }
+
+  pctx.putImageData(out, 0, 0);
+
+  convertedDataURL = processCanvas.toDataURL('image/png');
+  convertedImg.src = convertedDataURL;
+  convertedWrap.classList.add('show');
+  conversionCtrl.classList.add('show');
+  camUseBtn.style.display = '';
+}
+
+/* ---------- Image processing helpers ---------- */
+
+function grayscale(data, w, h) {
+  const g = new Float32Array(w * h);
+  for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+    g[j] = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+  }
+  return g;
+}
+
+function blur(gray, w, h, radius) {
+  if (radius < 1) return gray;
+  const out = new Float32Array(w * h);
+  const r = Math.floor(radius);
+  const size = r * 2 + 1;
+  // Horizontal pass
+  const tmp = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let sum = 0, count = 0;
+      for (let k = -r; k <= r; k++) {
+        const nx = x + k;
+        if (nx >= 0 && nx < w) { sum += gray[y * w + nx]; count++; }
+      }
+      tmp[y * w + x] = sum / count;
+    }
+  }
+  // Vertical pass
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let sum = 0, count = 0;
+      for (let k = -r; k <= r; k++) {
+        const ny = y + k;
+        if (ny >= 0 && ny < h) { sum += tmp[ny * w + x]; count++; }
+      }
+      out[y * w + x] = sum / count;
+    }
+  }
+  return out;
+}
+
+function convertToEdges(src, out, w, h, detail, thickness) {
+  // detail 1..10 controls smoothing & edge strength
+  const smoothRadius = Math.max(0, 6 - detail) * 0.7;
+  const gray = grayscale(src.data, w, h);
+  const smooth = blur(gray, w, h, smoothRadius);
+
+  // Sobel
+  const edges = new Float32Array(w * h);
+  let maxE = 0;
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      const gx =
+        -smooth[i - w - 1] - 2 * smooth[i - w] - smooth[i - w + 1] +
+         smooth[i + w - 1] + 2 * smooth[i + w] + smooth[i + w + 1];
+      const gy =
+        -smooth[i - w - 1] - 2 * smooth[i - 1] - smooth[i + w - 1] +
+         smooth[i - w + 1] + 2 * smooth[i + 1] + smooth[i + w + 1];
+      const mag = Math.sqrt(gx * gx + gy * gy);
+      edges[i] = mag;
+      if (mag > maxE) maxE = mag;
+    }
+  }
+
+  // Threshold based on detail: higher detail -> more edges survive
+  const threshold = maxE * (0.18 - detail * 0.01);
+  const lineWidth = thickness;
+
+  // Build a binary mask
+  const mask = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    if (edges[i] > threshold) mask[i] = 1;
+  }
+
+  // Dilate for thicker lines
+  const dilated = new Uint8Array(w * h);
+  const r = lineWidth - 1;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (mask[y * w + x]) {
+        for (let dy = -r; dy <= r; dy++) {
+          for (let dx = -r; dx <= r; dx++) {
+            const nx = x + dx, ny = y + dy;
+            if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+              dilated[ny * w + nx] = 1;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  for (let i = 0, j = 0; i < w * h; i++, j += 4) {
+    const v = dilated[i] ? 0 : 255;
+    out.data[j] = v;
+    out.data[j+1] = v;
+    out.data[j+2] = v;
+    out.data[j+3] = 255;
+  }
+}
+
+function convertToDots(src, out, w, h, detail) {
+  // Stipple/dot effect: sample brightness, place dots where dark
+  const gray = grayscale(src.data, w, h);
+  const spacing = Math.max(3, 14 - detail); // detail 10 -> spacing 4
+  const radius = Math.max(1, Math.round(detail / 3));
+
+  // White background
+  for (let i = 0; i < out.data.length; i += 4) {
+    out.data[i] = 255; out.data[i+1] = 255; out.data[i+2] = 255; out.data[i+3] = 255;
+  }
+
+  for (let y = 0; y < h; y += spacing) {
+    for (let x = 0; x < w; x += spacing) {
+      const g = gray[y * w + x];
+      // Darker -> bigger dots
+      const darkness = 1 - g / 255;
+      const dr = Math.max(1, Math.round(darkness * radius * 2));
+      if (darkness < 0.12) continue;
+      drawDot(out, w, h, x, y, dr, 40);
+    }
+  }
+}
+
+function drawDot(out, w, h, cx, cy, r, value) {
+  for (let y = cy - r; y <= cy + r; y++) {
+    for (let x = cx - r; x <= cx + r; x++) {
+      if (x < 0 || y < 0 || x >= w || y >= h) continue;
+      const dx = x - cx, dy = y - cy;
+      if (dx * dx + dy * dy <= r * r) {
+        const j = (y * w + x) * 4;
+        out.data[j] = value;
+        out.data[j+1]
+        out.data[j+2] = value;
+        out.data[j+3] = 255;
+      }
+    }
+  }
+}
+
+function convertToPosterize(src, out, w, h, detail) {
+  // Chunky / posterized look: quantize colors and add dark outlines
+  const levels = Math.max(2, Math.min(6, Math.round(detail / 2) + 1));
+  const gray = grayscale(src.data, w, h);
+
+  // Sobel edge detection for outlines
+  const edges = new Float32Array(w * h);
+  let maxE = 0;
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      const gx =
+        -gray[i - w - 1] - 2 * gray[i - w] - gray[i - w + 1] +
+         gray[i + w - 1] + 2 * gray[i + w] + gray[i + w + 1];
+      const gy =
+        -gray[i - w - 1] - 2 * gray[i - 1] - gray[i + w - 1] +
+         gray[i - w + 1] + 2 * gray[i + 1] + gray[i + w + 1];
+      const mag = Math.sqrt(gx * gx + gy * gy);
+      edges[i] = mag;
+      if (mag > maxE) maxE = mag;
+    }
+  }
+
+  const edgeThreshold = maxE * 0.28;
+  const step = 255 / (levels - 1);
+
+  for (let i = 0, j = 0; i < w * h; i++, j += 4) {
+    // Posterize each channel
+    const r = Math.round(Math.round(src.data[j] / step) * step);
+    const g = Math.round(Math.round(src.data[j+1] / step) * step);
+    const b = Math.round(Math.round(src.data[j+2] / step) * step);
+
+    if (edges[i] > edgeThreshold) {
+      out.data[j] = 0;
+      out.data[j+1] = 0;
+      out.data[j+2] = 0;
+    } else {
+      out.data[j] = r;
+      out.data[j+1] = g;
+      out.data[j+2] = b;
+    }
+    out.data[j+3] = 255;
+  }
+}
+
+/* ==========================================================
+   15. CAMERA EVENT WIRING
+   ========================================================== */
+camStartBtn.onclick = () => startCamera();
+camSnapBtn.onclick  = () => snapPhoto();
+camCancelBtn.onclick = () => closeCamera();
+
+camUploadBtn.onclick = () => fileInput.click();
+
+fileInput.onchange = (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    loadPhotoFromDataURL(ev.target.result);
+  };
+  reader.readAsDataURL(file);
+  fileInput.value = ''; // allow re-uploading same file
+};
+
+camUseBtn.onclick = () => {
+  if (!convertedDataURL) return;
+
+  const img = new Image();
+  img.onload = () => {
+    const dpr = window.devicePixelRatio || 1;
+    const tw = parseFloat(canvas.style.width);
+    const th = parseFloat(canvas.style.height);
+
+    pushUndo();
+
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, tw, th);
+    ctx.restore();
+
+    // Fit image into canvas
+    const iw = img.naturalWidth;
+    const ih = img.naturalHeight;
+    const scale = Math.min(tw / iw, th / ih);
+    const drawW = iw * scale;
+    const drawH = ih * scale;
+    const offX = (tw - drawW) / 2;
+    const offY = (th - drawH) / 2;
+
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.drawImage(img, offX, offY, drawW, drawH);
+    ctx.restore();
+
+    closeCamera();
+    toast('Now paint your photo! 🎨');
+  };
+  img.src = convertedDataURL;
+};
+
+/* ==========================================================
+   16. TOAST
+   ========================================================== */
+const toastEl = document.getElementById('toast');
+let toastTimer = null;
+
+function toast(message) {
+  toastEl.textContent = message;
+  toastEl.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toastEl.classList.remove('show');
+  }, 2200);
+}
+
+/* ==========================================================
+   17. INITIALIZATION
+   ========================================================== */
+// Size main canvas once everything is laid out
+function init() {
+  setupCanvas(canvas, ctx, wrap);
+  applyTransform();
+  setActiveTab('draw');
+  buildGallery();
+}
+
+// Make sure layout has settled before measuring
+window.addEventListener('load', init);
+// Fallback in case load already fired
+if (document.readyState === 'complete') {
+  init();
+} else {
+  window.addEventListener('load', init);
+}
+
+// Re-size maker canvas when window resizes while maker is open
+window.addEventListener('resize', () => {
+  if (makerOverlay.classList.contains('show')) {
+    sizeMakerCanvas();
+  }
+});
+</script>
 </body>
 </html>
