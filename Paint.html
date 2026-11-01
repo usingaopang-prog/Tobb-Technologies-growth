@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>🎨 Kids Paint</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+      background: linear-gradient(135deg, #ffeaa7, #a8e6cf);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    header {
+      text-align: center;
+      padding: 8px;
+      font-size: 28px;
+      color: #fff;
+      text-shadow: 2px 2px 0 #ff6b9d;
+    }
+
+    #toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 20px;
+      margin: 0 8px;
+    }
+
+    .color-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+    .color-btn:hover { transform: scale(1.15); }
+    .color-btn.active {
+      border-color: #333;
+      transform: scale(1.2);
+    }
+
+    .size-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #ccc;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .size-btn.active { border-color: #333; background: #ffeaa7; }
+    .size-dot {
+      background: #333;
+      border-radius: 50%;
+    }
+
+    .action-btn {
+      height: 44px;
+      padding: 0 16px;
+      border-radius: 22px;
+      border: none;
+      background: #ff6b9d;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+    .action-btn:hover { background: #ff4f88; }
+    .action-btn.eraser-on { background: #6c5ce7; }
+
+    #canvas-wrap {
+      flex: 1;
+      margin: 8px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    canvas {
+      display: block;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    #stickers {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      padding: 4px;
+      flex-wrap: wrap;
+    }
+    .sticker {
+      font-size: 32px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.5);
+      transition: transform 0.1s;
+    }
+    .sticker:hover { transform: scale(1.2); background: #fff; }
+
+    @media (max-width: 600px) {
+      header { font-size: 20px; }
+      .color-btn, .size-btn { width: 36px; height: 36px; }
+      .action-btn { height: 38px; padding: 0 12px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>🎨 Draw & Paint! 🖌️</header>
+
+  <div id="toolbar">
+    <!-- Colors -->
+    <div class="color-btn active" style="background:#000000" data-color="#000000"></div>
+    <div class="color-btn" style="background:#ff0000" data-color="#ff0000"></div>
+    <div class="color-btn" style="background:#ff8c00" data-color="#ff8c00"></div>
+    <div class="color-btn" style="background:#ffe600" data-color="#ffe600"></div>
+    <div class="color-btn" style="background:#00c853" data-color="#00c853"></div>
+    <div class="color-btn" style="background:#00b0ff" data-color="#00b0ff"></div>
+    <div class="color-btn" style="background:#7c4dff" data-color="#7c4dff"></div>
+    <div class="color-btn" style="background:#ff4081" data-color="#ff4081"></div>
+    <div class="color-btn" style="background:#8d5524" data-color="#8d5524"></div>
+    <div class="color-btn" style="background:#ffffff" data-color="#ffffff"></div>
+
+    <!-- Brush sizes -->
+    <div class="size-btn" data-size="4"><div class="size-dot" style="width:6px;height:6px"></div></div>
+    <div class="size-btn active" data-size="12"><div class="size-dot" style="width:14px;height:14px"></div></div>
+    <div class="size-btn" data-size="28"><div class="size-dot" style="width:24px;height:24px"></div></div>
+    <div class="size-btn" data-size="50"><div class="size-dot" style="width:36px;height:36px"></div></div>
+
+    <!-- Eraser -->
+    <button class="action-btn" id="eraserBtn">🧽 Eraser</button>
+
+    <!-- Clear -->
+    <button class="action-btn" id="clearBtn" style="background:#e74c3c">🗑️ Clear</button>
+
+    <!-- Save -->
+    <button class="action-btn" id="saveBtn" style="background:#00b894">💾 Save</button>
+  </div>
+
+  <div id="stickers">
+    <span class="sticker" data-sticker="⭐">⭐</span>
+    <span class="sticker" data-sticker="❤️">❤️</span>
+    <span class="sticker" data-sticker="🌈">🌈</span>
+    <span class="sticker" data-sticker="🌸">🌸</span>
+    <span class="sticker" data-sticker="🦋">🦋</span>
+    <span class="sticker" data-sticker="🐶">🐶</span>
+    <span class="sticker" data-sticker="🐱">🐱</span>
+    <span class="sticker" data-sticker="🚀">🚀</span>
+    <span class="sticker" data-sticker="🦄">🦄</span>
+    <span class="sticker" data-sticker="🍦">🍦</span>
+    <span class="sticker" data-sticker="🌻">🌻</span>
+  </div>
+
+  <div id="canvas-wrap">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const wrap = document.getElementById('canvas-wrap');
+
+    let currentColor = '#000000';
+    let currentSize = 12;
+    let isErasing = false;
+    let drawing = false;
+    let activeSticker = null;
+
+    // ---- Resize canvas (with HiDPI support) ----
+    function resizeCanvas() {
+      // Save current drawing
+      const snapshot = document.createElement('canvas');
+      snapshot.width = canvas.width;
+      snapshot.height = canvas.height;
+      snapshot.getContext('2d').drawImage(canvas, 0, 0);
+
+      const dpr = window.devicePixelRatio || 1;
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.scale(dpr, dpr);
+
+      // Restore drawing scaled to new size
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      if (snapshot.width) {
+        ctx.drawImage(snapshot, 0, 0, w, h);
+      }
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // ---- Coordinate helper ----
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const point = e.touches ? e.touches[0] : e;
+      return {
+        x: point.clientX - rect.left,
+        y: point.clientY - rect.top
+      };
+    }
+
+    // ---- Drawing ----
+    function startDraw(e) {
+      e.preventDefault();
+      const pos = getPos(e);
+
+      // Sticker mode: stamp emoji
+      if (activeSticker) {
+        ctx.font = `${currentSize * 4}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(activeSticker, pos.x, pos.y);
+        return;
+      }
+
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      ctx.lineTo(pos.x + 0.01, pos.y + 0.01);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = isErasing ? '#ffffff' : currentColor;
+      ctx.lineWidth = currentSize;
+      ctx.stroke();
+    }
+
+    function moveDraw(e) {
+      if (!drawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    }
+
+    function endDraw(e) {
+      if (drawing) e.preventDefault();
+      drawing = false;
+      ctx.beginPath();
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', moveDraw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', moveDraw, { passive: false });
+    canvas.addEventListener('touchend', endDraw);
+    canvas.addEventListener('touchcancel', endDraw);
+
+    // ---- Color selection ----
+    document.querySelectorAll('.color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentColor = btn.dataset.color;
+        isErasing = false;
+        activeSticker = null;
+        document.getElementById('eraserBtn').classList.remove('eraser-on');
+      });
+    });
+
+    // ---- Size selection ----
+    document.querySelectorAll('.size-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSize = parseInt(btn.dataset.size);
+      });
+    });
+
+    // ---- Eraser ----
+    document.getElementById('eraserBtn').addEventListener('click', function() {
+      isErasing = !isErasing;
+      this.classList.toggle('eraser-on', isErasing);
+      activeSticker = null;
+    });
+
+    // ---- Clear ----
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (confirm('Clear the whole drawing?')) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    });
+
+    // ---- Save ----
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'my-artwork.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    // ---- Stickers ----
+    document.querySelectorAll('.sticker').forEach(el => {
+      el.addEventListener('click', () => {
+        activeSticker = el.dataset.sticker;
+        isErasing = false;
+        document.getElementById('eraserBtn').classList.remove('eraser-on');
+      });
+    });
+
+    // Initial white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  </script>
+
+</body>
+</html>
